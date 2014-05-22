@@ -49,7 +49,7 @@ ad_proc -public im_sla_parameter_permissions {
     # We want to cache the query, so we have to use a "dollar variable" and
     # so we need to check security before doing so...
     im_security_alert_check_integer -location "im_sla_parameter_permissions" -value $param_id
-    set sla_id [util_memoize "db_string param_sla {select param_sla_id from im_sla_parameters where param_id = $param_id} -default {}"]
+    set sla_id [util_memoize [list db_string param_sla "select param_sla_id from im_sla_parameters where param_id = $param_id" -default {}]]
 
     # Permissions on parameters are permission on the parameter's container project
     im_project_permissions $user_id $sla_id view read write admin
@@ -394,7 +394,7 @@ ad_proc -public im_sla_ticket_solution_time_sweeper_helper {
     ns_log Notice "im_sla_ticket_solution_time_sweeper_helper: starting"
 
     # Deal with timezone offsets for epoch calculation...
-    set tz_offset_seconds [util_memoize "db_string tz_offset {select extract(timezone from now())}"]
+    set tz_offset_seconds [util_memoize [list db_string tz_offset "select extract(timezone from now())"]]
 
     # User to act as
     set current_user_id [db_string cuid "select min(user_id) from users where user_id > 0"]
