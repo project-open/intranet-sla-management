@@ -749,11 +749,7 @@ SELECT im_component_plugin__new (
 	'/intranet/projects/view',		-- page_url
 	null,					-- view_name
 	140,					-- sort_order
-	'im_dashboard_histogram_sql -diagram_width 200 \
--name "Resolution Time per Ticket Type" \
--object_id $project_id \
--restrict_to_object_type_id [im_project_type_sla] \
--sql "
+	'im_dashboard_histogram_sql -diagram_width 200 -object_id $project_id -restrict_to_object_type_id [im_project_type_sla] -sql "
 		select	im_category_from_id(t.ticket_type_id) as ticket_type,
 			coalesce(avg(t.ticket_resolution_time), 0)
 		from	im_tickets t, im_projects p
