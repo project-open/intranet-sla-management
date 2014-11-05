@@ -33,7 +33,7 @@ set create_new_entry_msg [lang::message::lookup "" intranet-sla-management.Creat
 
 # ---------------------------------------------------------------
 # Read the priority map from DB
-# The map contains triples of (id, ticket_type_id, ticket_severity_id => ticket_priority_id)
+# The map contains triples of (id, ticket_type_id, ticket_severity_id => ticket_prio_id)
 
 set priority_map_sql "
 	select	sla_ticket_priority_map
@@ -63,7 +63,7 @@ set elements {
 	ticket_severity {	
 	    label "[lang::message::lookup {} intranet-sla-management.Ticket_Type {Severity}]"
 	}
-	ticket_priority {	
+	ticket_prio {	
 	    label "[lang::message::lookup {} intranet-sla-management.Ticket_Priority {Prio}]"
 	}
 }
@@ -107,7 +107,7 @@ template::list::create \
 #
 set extend_list {map_chk map_url}
 
-multirow create map_lines map_id map_chk ticket_type_id ticket_type ticket_severity_id ticket_severity ticket_priority_id ticket_priority
+multirow create map_lines map_id map_chk ticket_type_id ticket_type ticket_severity_id ticket_severity ticket_prio_id ticket_prio
 
 foreach tuple $priority_map {
     set map_id [lindex $tuple 0]

@@ -193,6 +193,12 @@ create table im_sla_parameters (
 	ticket_type_id		integer
 				constraint im_sla_parameter_ticket_type_fk
 				references im_categories,
+				-- Second default parameter: Priority of ticket
+				-- The name of the field should be identical to the name
+				-- of the corresponding im_tickets field.
+	ticket_prio_id		integer
+				constraint im_sla_parameter_ticket_prio_fk
+				references im_categories,
 				-- First default value: Resolution time 
 	max_resolution_hours	numeric(12,1)
 	
@@ -554,7 +560,11 @@ create table im_sla_service_hours (
 --		p_table_name		alias for $9;
 
 SELECT im_dynfield_attribute_new (
-	'im_sla_parameter', 'ticket_type_id', 'Ticket Type', 'ticket_type', 'integer', 'f', 30, 'f', 'im_sla_parameters'
+	'im_sla_parameter', 'ticket_type_id', 'Ticket Type', 'ticket_type', 'integer', 'f', 10, 'f', 'im_sla_parameters'
+);
+
+SELECT im_dynfield_attribute_new (
+	'im_sla_parameter', 'ticket_prio_id', 'Ticket Prio', 'ticket_priority', 'integer', 'f', 20, 'f', 'im_sla_parameters'
 );
 
 

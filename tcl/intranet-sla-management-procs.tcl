@@ -363,14 +363,21 @@ ad_proc -public im_sla_ticket_solution_time_sweeper {
         return
     }
 
-    # Catch possible errors in order to make sure the semaphore gets
-    # set correctly.
+    # Catch errors calculating the solution time
     set result ""
     if {[catch {
-	set result [im_sla_ticket_solution_time_sweeper_helper -debug_p $debug_p -ticket_id $ticket_id -limit $limit]
+	append result [im_sla_ticket_solution_time_sweeper_helper -debug_p $debug_p -ticket_id $ticket_id -limit $limit]
     } err_msg]} {
-	ns_log Error "im_sla_ticket_solution_time_sweeper: Found error: $err_msg"
-	set result "<pre>$err_msg</pre>"
+	ns_log Error "im_sla_ticket_solution_time_sweeper: solution time: Found error: $err_msg"
+	append result "<pre>$err_msg</pre>"
+    }
+
+    # Catch errors calculating the green/yellow/red status of tickets
+    if {[catch {
+	append result [im_sla_ticket_traffic_light_sweeper_helper -debug_p $debug_p -ticket_id $ticket_id -limit $limit]
+    } err_msg]} {
+	ns_log Error "im_sla_ticket_solution_time_sweeper: traffic light status: Found error: $err_msg"
+	append result "<pre>$err_msg</pre>"
     }
 
     # De-block the execution of this procedure for a 2nd thread
@@ -381,6 +388,186 @@ ad_proc -public im_sla_ticket_solution_time_sweeper {
     }
     return $result
 }
+
+
+ad_proc -public im_sla_ticket_traffic_light_sweeper_helper {
+    {-debug_p 0}
+    {-ticket_id ""}
+} {
+    Calculates the green/yellow/red status of tickets depending on
+    solution time and SLA parameters.
+} {
+    ns_log Notice "im_sla_ticket_traffic_light_sweeper_helper: starting"
+
+    # ---------------------------------------
+    # Parameters and Conditions
+    #
+    set green_expr "1"
+    set yellow_expr "\$ticket_resolution_time > \[expr \$max_resolution_hours + 4]"
+    set red_expr "\$ticket_resolution_time > \$max_resolution_hours"
+    set green_expr [parameter::get_from_package_key -package_key "intranet-sla-management" -parameter "TrafficLightStatusTCLGreen" -default $green_expr]
+    set yellow_expr [parameter::get_from_package_key -package_key "intranet-sla-management" -parameter "TrafficLightStatusTCLYellow" -default $yellow_expr]
+    set red_expr [parameter::get_from_package_key -package_key "intranet-sla-management" -parameter "TrafficLightStatusTCLRed" -default $red_expr]
+
+    # ---------------------------------------
+    # Metadata
+    #
+    set sla_fields [util_memoize [list db_list sla_dynfields "select aa.attribute_name from acs_attributes aa, im_dynfield_attributes da where aa.attribute_id = da.acs_attribute_id and aa.object_type = 'im_sla_parameter' and da.also_hard_coded_p = 'f' order by aa.sort_order"]]
+    set ticket_fields [util_memoize [list db_list sla_dynfields "select aa.attribute_name from acs_attributes aa, im_dynfield_attributes da where aa.attribute_id = da.acs_attribute_id and aa.object_type = 'im_ticket' order by aa.sort_order"]]
+
+    # Parameter fields are "input fields"
+    set parameter_fields [set_intersection $sla_fields $ticket_fields]
+    # Value fields are "output fields".
+    # Their value is determines based on a best match of the parameter fields
+    set value_fields [set_difference $sla_fields $parameter_fields]
+
+    # ---------------------------------------
+    # Get the list of open tickets to process 
+    #
+    set open_tickets_sql "
+			select	sla.project_id as sla_id,
+				p.on_track_status_id,
+				t.*,
+				p.*
+			from	im_tickets t,
+				im_projects p,
+				im_projects sla
+			where	t.ticket_id = p.project_id and
+				p.parent_id = sla.project_id and
+				sla.project_type_id = [im_project_type_sla] and
+				t.ticket_status_id in ([join [im_sub_categories [im_ticket_status_open]] ","]) and
+				sla.project_status_id in ([join [im_sub_categories [im_project_status_open]] ","])
+    "
+
+    if {"" != $ticket_id} {
+	# Manually specified the ticket (for debugging?)
+       set open_tickets_sql "
+			select	p.parent_id as sla_id,
+				p.on_track_status_id,
+				t.*,
+				p.*
+			from	im_tickets t,
+				im_projects p
+			where	t.ticket_id = p.project_id and
+				t.ticket_id = :ticket_id
+        "
+    }
+
+    # ---------------------------------------
+    # Load the list of sla_parameters into a hash per sla_id
+    #
+    set sla_parameter_sql "
+			select	sla.project_id as sla_id,
+				par.*,
+				CASE WHEN ticket_prio_id is NULL THEN 0 ELSE 10 END as prio_score, 
+				CASE WHEN ticket_type_id is NULL THEN 0 ELSE 20 END as type_score
+			from	im_projects sla,
+				im_sla_parameters par
+			where	par.param_sla_id = sla.project_id and
+				sla.project_id in (
+					select distinct sla_id from (\n$open_tickets_sql\n) t
+				)
+    "
+    db_foreach sla_parameters $sla_parameter_sql {
+	# set key "$sla_id-$ticket_prio_id-$ticket_type_id"
+	set key "$sla_id"
+	foreach field $parameter_fields {
+	    set value [expr $$field]
+	    if {"" != $value} {
+		append key "-$value"
+	    }
+	}
+	
+	# Store the value field contents in the corresponding hashes
+	foreach field $value_fields {
+	    set cmd [list set ${field}_hash($key) [expr "\$$field"]]
+	    eval $cmd
+	}
+    }
+
+#    ad_return_complaint 1 "value_fields=$value_fields<br>[array get max_resolution_hours_hash]"
+
+    # ---------------------------------------
+    # Loop through all open tickets and check for the SLA parameters of their SLA
+    #
+    set max_resolution_hours ""
+    set permutations [im_report_take_all_ordered_permutations $parameter_fields]
+    db_foreach open_tickets $open_tickets_sql {
+	ns_log Notice "im_sla_ticket_traffic_light_sweeper_helper: #$ticket_id: ticket_type_id=$ticket_type_id, ticket_prio_id=$ticket_prio_id, ticket_resolution_time=$ticket_resolution_time"
+
+	# Check if we can find the 
+	set found_p 0
+	foreach perm $permutations {
+	    ns_log Notice "sweeper_helper: #$ticket_id: permutation: $perm"
+
+	    set key "$sla_id"
+	    foreach field $perm {
+		set value [expr $$field]
+		if {"" != $value} {
+		    append key "-$value"
+		}
+	    }
+
+	    # Check if the entry exists for the permutation of the parameter fields
+	    set field [lindex $value_fields 0]
+	    set exists_p [info exists ${field}_hash($key)]
+
+	    # Extract the value field values, if they exist
+	    if {$exists_p} {
+		foreach field $value_fields {		    
+		    set cmd "set $field \$${field}_hash(\$key)"
+		    eval $cmd
+#		    ad_return_complaint 1 "cmd=$cmd<br>field=[expr "\$$field"]<br> mx=$max_resolution_hours_hash($key)"
+		}
+		# This breaks out of the foreach perm $permutations loop
+		set found_p 1
+		break
+	    }
+	}
+
+	set debug ""
+	foreach field $value_fields { append debug "$field=[expr "\$$field"] ," }
+	ns_log Notice "im_sla_ticket_traffic_light_sweeper_helper: #$ticket_id: $debug"
+
+	# Advance to the next open ticket if we didn't find any parameters
+	if {!$found_p} { continue }
+
+	# Now determine the color for the ticket
+	set color ""
+
+	if {[catch {
+	    if {"" != $green_expr && [expr $green_expr]} { set color [im_project_on_track_status_green] }
+	} err_msg]} {
+	    ns_log Error "im_sla_ticket_traffic_light_sweeper_helper: #$ticket_id:  Error evaluating green_expr=$green_expr: $err_msg"
+	}
+	if {[catch {
+	    if {"" != $yellow_expr && [expr $yellow_expr]} { set color [im_project_on_track_status_yellow] }
+	} err_msg]} {
+	    ns_log Error "im_sla_ticket_traffic_light_sweeper_helper: #$ticket_id:  Error evaluating yellow_expr=$yellow_expr: $err_msg"
+	}
+	if {[catch {
+	    if {"" != $red_expr && [expr $red_expr]} { set color [im_project_on_track_status_red] }
+	} err_msg]} {
+	    ns_log Error "im_sla_ticket_traffic_light_sweeper_helper: #$ticket_id:  Error evaluating red_expr=$red_expr: $err_msg"
+	}
+
+	# Update the ticket only if the status has changed
+	if {$color != $on_track_status_id} {
+	    db_dml update_ticket_on_track_status "
+	    	update im_projects
+		set on_track_status_id = :color
+		where project_id = :ticket_id   
+            "
+	}
+	
+    }
+
+    ns_log Notice "im_sla_ticket_traffic_light_sweeper_helper: finished"
+    return $color
+}
+
+
+
 
 ad_proc -public im_sla_ticket_solution_time_sweeper_helper {
     {-debug_p 0}

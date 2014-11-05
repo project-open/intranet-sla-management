@@ -10,7 +10,7 @@
     <inherit-templates-p>f</inherit-templates-p>
     <auto-mount>intranet-sla-management</auto-mount>
 
-    <version name="4.1.0.0.0" url="http://www.project-open.org/download/apm/intranet-sla-management-4.1.0.0.0.apm">
+    <version name="4.1.0.0.1" url="http://www.project-open.org/download/apm/intranet-sla-management-4.1.0.0.1.apm">
         <owner url="mailto:frank.bergmann@project-open.com">Frank Bergmann</owner>
         <summary>Service Level Agreements define parameters for service contracts between customers and service providers. This package allows defining SLA parameters using dynamic attributes.</summary>
         <vendor url="http://www.project-open.com/">]project-open[</vendor>
@@ -27,10 +27,12 @@
         <callbacks>
         </callbacks>
         <parameters>
-
             <parameter datatype="number"  min_n_values="1"  max_n_values="1"  name="CloseResolvedTicketsSweeperInterval"  default="301" description="Should we automatically check for 'resolved' tickets in order to close them? Please set a a time span (in seconds). Default is 301 seconds (5 minutes)"/>
             <parameter datatype="number"  min_n_values="1"  max_n_values="1"  name="CloseResolvedTicketAfterSeconds"  default="0" description="Should we automatically close 'resolved' tickets? The default is '0' to disable this feature. To enable, please set oa a time span (in seconds). Example: 36000 will close after 10 hours"/>
             <parameter datatype="number"  min_n_values="1"  max_n_values="1"  name="SLASolutionTimeSweeperInterval"  default="179" description="Should we calculate the 'resolution time' of tickets? Please set a a time span (in seconds). The default is '179' for every three minutes."/>
+            <parameter scope="instance" datatype="string"  min_n_values="1"  max_n_values="1"  name="TrafficLightStatusTCLGreen" default="1" description="TCL expression that evaluates to 1 if the status of the ticket should get green. Will be overwritten by status yellow and red. Please see TCLYellow for comments. Default is '1'."/>
+            <parameter scope="instance" datatype="string"  min_n_values="1"  max_n_values="1"  name="TrafficLightStatusTCLYellow" default="$ticket_resolution_time > [expr $max_resolution_hours + 4]" description="TCL expression that evaluates to 1 if the status of the ticket should get yellow. Overwrites status green and will be overwritten by status red. The expression can use all fields of the ticket (columns of im_tickets and im_projects) plus the value fields from im_sla_parameters (typically max_resolution_hours). Default is '$ticket_resolution_time > [expr $max_resolution_hours + 4]' in order to mark all tickets as yellow four hours before their target resolution time."/>
+            <parameter scope="instance" datatype="string"  min_n_values="1"  max_n_values="1"  name="TrafficLightStatusTCLRed" default="$ticket_resolution_time > $max_resolution_hours" description="TCL expression that evaluates to 1 if the status of the ticket should get red. Overwrites status yellow and red. Please see TCLYellow for comments. Default is '$ticket_resolution_time > $max_resolution_hours'."/>
         </parameters>
 
     </version>
