@@ -355,6 +355,7 @@ ad_proc -public im_sla_ticket_solution_time_sweeper {
     the limit is set to 100 by default.
 } {
     ns_log Notice "im_sla_ticket_solution_time_sweeper: starting"
+    set traffic_light_limit [expr $limit * 1000]
 
     # Make sure that only one thread is calculating at a time
     if {[nsv_incr intranet_sla_management sweeper_p] > 1} {
@@ -374,7 +375,7 @@ ad_proc -public im_sla_ticket_solution_time_sweeper {
 
     # Catch errors calculating the green/yellow/red status of tickets
     if {[catch {
-	append result [im_sla_ticket_traffic_light_sweeper_helper -debug_p $debug_p -ticket_id $ticket_id -limit $limit]
+	append result [im_sla_ticket_traffic_light_sweeper_helper -debug_p $debug_p -ticket_id $ticket_id -limit $traffic_light_limit]
     } err_msg]} {
 	ns_log Error "im_sla_ticket_solution_time_sweeper: traffic light status: Found error: $err_msg"
 	append result "<pre>$err_msg</pre>"
@@ -393,6 +394,7 @@ ad_proc -public im_sla_ticket_solution_time_sweeper {
 ad_proc -public im_sla_ticket_traffic_light_sweeper_helper {
     {-debug_p 0}
     {-ticket_id ""}
+    {-limit ""}
 } {
     Calculates the green/yellow/red status of tickets depending on
     solution time and SLA parameters.
@@ -453,6 +455,10 @@ ad_proc -public im_sla_ticket_traffic_light_sweeper_helper {
         "
     }
 
+    if {"" != $limit && 0 != $limit} {
+	append open_tickets_sql "\t\t\tLIMIT $limit\n"
+    }
+
     # ---------------------------------------
     # Load the list of sla_parameters into a hash per sla_id
     #
@@ -485,8 +491,6 @@ ad_proc -public im_sla_ticket_traffic_light_sweeper_helper {
 	}
     }
 
-#    ad_return_complaint 1 "value_fields=$value_fields<br>[array get max_resolution_hours_hash]"
-
     # ---------------------------------------
     # Loop through all open tickets and check for the SLA parameters of their SLA
     #
@@ -517,7 +521,6 @@ ad_proc -public im_sla_ticket_traffic_light_sweeper_helper {
 		foreach field $value_fields {		    
 		    set cmd "set $field \$${field}_hash(\$key)"
 		    eval $cmd
-#		    ad_return_complaint 1 "cmd=$cmd<br>field=[expr "\$$field"]<br> mx=$max_resolution_hours_hash($key)"
 		}
 		# This breaks out of the foreach perm $permutations loop
 		set found_p 1
@@ -559,13 +562,11 @@ ad_proc -public im_sla_ticket_traffic_light_sweeper_helper {
 		where project_id = :ticket_id   
             "
 	}
-	
     }
 
     ns_log Notice "im_sla_ticket_traffic_light_sweeper_helper: finished"
-    return $color
+    return
 }
-
 
 
 
