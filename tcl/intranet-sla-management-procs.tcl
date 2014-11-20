@@ -395,6 +395,7 @@ ad_proc -public im_sla_ticket_traffic_light_sweeper_helper {
     {-debug_p 0}
     {-ticket_id ""}
     {-limit ""}
+    {-reset_closed_tickets_p 0}
 } {
     Calculates the green/yellow/red status of tickets depending on
     solution time and SLA parameters.
@@ -440,10 +441,10 @@ ad_proc -public im_sla_ticket_traffic_light_sweeper_helper {
 				t.ticket_status_id in ([join [im_sub_categories [im_ticket_status_open]] ","]) and
 				sla.project_status_id in ([join [im_sub_categories [im_project_status_open]] ","])
     "
-
+    
     if {"" != $ticket_id} {
 	# Manually specified the ticket (for debugging?)
-       set open_tickets_sql "
+	set open_tickets_sql "
 			select	p.parent_id as sla_id,
 				p.on_track_status_id,
 				t.*,
@@ -453,6 +454,28 @@ ad_proc -public im_sla_ticket_traffic_light_sweeper_helper {
 			where	t.ticket_id = p.project_id and
 				t.ticket_id = :ticket_id
         "
+    } else {
+	
+	if {$reset_closed_tickets_p} {
+	    # Set the status of all closed tickets to ""
+	    # taking into account performance.
+	    db_dml reset_closed_tickets "
+		update im_projects
+		set on_track_status_id = null
+		where	on_track_status_id is not null and
+			project_id in (
+				select	t.ticket_id
+				from	im_tickets t,
+					im_projects p
+				where	t.ticket_id = p.project_id and
+					p.on_track_status_id is not null and
+					t.ticket_id not in (
+					select	ticket_id
+					from	($open_tickets_sql) t
+					)
+			)
+	    "
+	}
     }
 
     if {"" != $limit && 0 != $limit} {
