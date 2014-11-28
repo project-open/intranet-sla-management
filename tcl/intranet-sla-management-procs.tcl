@@ -904,7 +904,7 @@ ad_proc -public im_sla_ticket_solution_time_sweeper_helper {
 	set audit_sql "
 		select	*,
 			a.audit_object_id as ticket_id,
-			round(extract(epoch from a.audit_date)) as audit_date_epoch,
+			extract(epoch from a.audit_date) as audit_date_epoch,
 			to_char(a.audit_date, 'J') as audit_date_julian,
 			im_category_from_id(audit_object_status_id) as audit_object_status,
 			substring(audit_value from 'ticket_queue_id\\t(\[^\\n\]*)') as audit_ticket_queue_id,
@@ -1018,12 +1018,6 @@ ad_proc -public im_sla_ticket_solution_time_sweeper_helper {
 	    # Loop through events per ticket
 	    ns_log Notice "im_sla_ticket_solution_time_sweeper: Looping through events for ticket_id=$ticket_id"
 	    foreach e [lsort [array names hash]] {
-
-		if {![string is integer $e]} { 
-		    ns_log Error "im_sla_ticket_solution_time_sweeper_helper: Found epoch='$e' in hash, skipping"
-		    continue 
-		}
-
 		set event_full $hash($e)
 		set event [lindex $event_full 0]
 		
