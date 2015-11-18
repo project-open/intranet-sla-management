@@ -6,7 +6,7 @@
 <br>&nbsp;
 
 <form action=/intranet-sla-management/ticket-priority-add method=GET>
-<%= [export_form_vars project_id return_url] %>
+<%= [export_vars -form {project_id return_url}] %>
 <table>
 <tr class=rowtitle>
 <td class=rowtitle><%= [lang::message::lookup "" intranet-sla-management.Ticket_Type "Ticket Type"] %></td>

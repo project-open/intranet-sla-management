@@ -7,7 +7,7 @@
 
 <if "user" eq @target_object_type@>
 	<form action=associated-3 method=GET>
-	<%= [export_form_vars tid return_url] %>
+	<%= [export_vars -form {tid return_url}] %>
 	<p>Please select a user to add to the selected tickets.
 	</p>
 	<table>
@@ -38,7 +38,7 @@
 
 <if "release_project" eq @target_object_type@>
 	<form action=associated-3 method=GET>
-	<%= [export_form_vars tid return_url] %>
+	<%= [export_vars -form {tid return_url] %>
 	<p>Please select a user to add to the selected tickets.
 	</p>
 	<table>

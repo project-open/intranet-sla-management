@@ -11,7 +11,7 @@
 <br>
 
 <form action=related-objects-associate-2 method=GET>
-<%= [export_form_vars tid return_url] %>
+<%= [export_vars -form {tid return_url}] %>
 <table>
 	<tr>
 	<th colspan=2><%= [lang::message::lookup "" intranet-sla-management.Associate_With "Associate With"] %></th>

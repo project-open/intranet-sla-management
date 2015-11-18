@@ -121,7 +121,7 @@ im_dynfield::append_attributes_to_form \
 set pid [value_if_exists param_id]
 set param_action_html "
 <form action=/intranet-sla-management/parameters/action name=param_action>
-[export_form_vars return_url pid]
+[export_vars -form {return_url pid}]
 <input type=submit value='[lang::message::lookup "" intranet-sla-management.Action "Action"]'>
 [im_category_select \
      -translate_p 1 \
