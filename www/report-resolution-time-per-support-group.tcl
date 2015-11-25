@@ -35,7 +35,7 @@ ad_page_contract {
 set menu_label "reporting-sla-resolution-time-per-support-group"
 
 # Get the current user and make sure that he or she is logged in. 
-set current_user_id [ad_maybe_redirect_for_registration]
+set current_user_id [auth::require_login]
 
 # Determine whether the current_user has read permissions. 
 set read_p [db_string report_perms "
@@ -45,7 +45,7 @@ set read_p [db_string report_perms "
 " -default 'f']
 
 # Write out an error message if the current user doesn't have read permissions
-if {![string equal "t" $read_p]} {
+if {"t" ne $read_p } {
     set message "You don't have the necessary permissions to view this page"
     ad_return_complaint 1 "<li>$message"
     ad_script_abort
@@ -557,7 +557,7 @@ db_foreach sql $report_sql {
 	# a "hash", depending on the value of "counter".
 	# You need explicite evaluation ("expre") in TCL
 	# to calculate arithmetic expressions. 
-	set class $rowclass([expr $counter % 2])
+	set class $rowclass([expr {$counter % 2}])
 
 	# Restrict the length of the project_name to max.
 	# 40 characters. (New!)
@@ -575,11 +575,11 @@ db_foreach sql $report_sql {
 
 	# Calculated Variables (New!)
 	set po_per_quote_perc "undef"
-	if {[expr $quote_subtotal+0] != 0} {
-	  set po_per_quote_perc [expr int(10000.0 * $po_subtotal / $quote_subtotal) / 100.0]
+	if {[expr {$quote_subtotal+0}] != 0} {
+	  set po_per_quote_perc [expr {int(10000.0 * $po_subtotal / $quote_subtotal) / 100.0}]
 	  set po_per_quote_perc "$po_per_quote_perc %"
 	}
-	set gross_profit [expr $invoice_subtotal - $bill_subtotal]
+	set gross_profit [expr {$invoice_subtotal - $bill_subtotal}]
 
 	set last_value_list [im_report_render_header \
 	    -group_def $report_def \

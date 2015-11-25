@@ -23,7 +23,7 @@
 # Defaults & Security
 # ---------------------------------------------------------------
 
-set current_user_id [ad_maybe_redirect_for_registration]
+set current_user_id [auth::require_login]
 set add_reports_p [im_permission $current_user_id "add_reports"]
 set view_reports_all_p [im_permission $current_user_id "view_reports_all"]
 
@@ -149,7 +149,7 @@ set body_html ""
 set old_param_id ""
 set param_cnt 0
 set indicator_cnt 0
-set colspan [expr [llength $dynfield_attributes] + 2]
+set colspan [expr {[llength $dynfield_attributes] + 2}]
 
 # Read the results into a multirow because
 # the "evaluate" needs to alloc an additional DB connection
@@ -190,7 +190,7 @@ template::multirow foreach param_indicators {
 	}
 
 #	if {[regexp {^([0-9]*)\.([0-9][0-9])} $result match body fraction]} { set result "$body.$fraction" }
-	if {[string is double $result]} { set result [expr round(100.0 * $result) / 100.0] }
+	if {[string is double $result]} { set result [expr {round(100.0 * $result) / 100.0}] }
 
 	set diagram_html [im_indicator_horizontal_bar \
 			      -name $report_name \
@@ -220,7 +220,7 @@ template::multirow foreach param_indicators {
 	if {!$add_reports_p} { set edit_html "" }
 
 	set row_html ""
-	append row_html "<tr $bgcolor([expr $indicator_cnt % 2])>\n"
+	append row_html "<tr $bgcolor([expr {$indicator_cnt % 2}])>\n"
 	append row_html "<td>&nbsp;</td>\n"
 #	append row_html "<td><input type=checkbox name=indicator value=$indicator_id></input></td>\n"
 	set indicator_url [export_vars -base "/intranet-reporting-indicators/view" {indicator_id}]

@@ -18,7 +18,7 @@
 # Defaults & Security
 # ---------------------------------------------------------------
 
-set current_user_id [ad_maybe_redirect_for_registration]
+set current_user_id [auth::require_login]
 if {"" == $return_url} { set return_url [im_url_with_query] }
 set page_title [lang::message::lookup "" intranet-sla-management.Service_Hours "Service Hours"]
 set context_bar [im_context_bar $page_title]
@@ -61,7 +61,7 @@ for {set day 0} {$day < 7} {incr day} {
     set line_html "<tr>\n"
     append line_html "<td>[lindex $dow_list $day]</td>\n"
     for {set h 0} {$h < 24} {incr h} {
-	set idx [expr $day*100 + $h]
+	set idx [expr {$day*100 + $h}]
 	set hh $h
 	if {[string length $hh] < 2} { set hh "0$hh" }
 	set hh "$hh:01"

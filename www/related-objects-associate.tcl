@@ -19,7 +19,7 @@ ad_page_contract {
 # Defaults & Security
 # ---------------------------------------------------------------
 
-set current_user_id [ad_maybe_redirect_for_registration]
+set current_user_id [auth::require_login]
 set page_title [lang::message::lookup "" intranet-helpdesk.Associate_Param_With_Other_Object "Associate SLA Parameter With Another Object"]
 set context_bar [im_context_bar $page_title]
 set page_focus "im_header_form.keywords"

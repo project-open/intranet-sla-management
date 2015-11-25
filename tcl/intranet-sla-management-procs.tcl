@@ -355,7 +355,7 @@ ad_proc -public im_sla_ticket_solution_time_sweeper {
     the limit is set to 100 by default.
 } {
     ns_log Notice "im_sla_ticket_solution_time_sweeper: starting"
-    set traffic_light_limit [expr $limit * 1000]
+    set traffic_light_limit [expr {$limit * 1000}]
 
     # Make sure that only one thread is calculating at a time
     if {[nsv_incr intranet_sla_management sweeper_p] > 1} {
@@ -564,17 +564,17 @@ ad_proc -public im_sla_ticket_traffic_light_sweeper_helper {
 	set color ""
 
 	if {[catch {
-	    if {"" != $green_expr && [expr $green_expr]} { set color [im_project_on_track_status_green] }
+	    if {"" != $green_expr && [expr {$green_expr}]} { set color [im_project_on_track_status_green] }
 	} err_msg]} {
 	    ns_log Error "im_sla_ticket_traffic_light_sweeper_helper: #$ticket_id:  Error evaluating green_expr=$green_expr: $err_msg"
 	}
 	if {[catch {
-	    if {"" != $yellow_expr && [expr $yellow_expr]} { set color [im_project_on_track_status_yellow] }
+	    if {"" != $yellow_expr && [expr {$yellow_expr}]} { set color [im_project_on_track_status_yellow] }
 	} err_msg]} {
 	    ns_log Error "im_sla_ticket_traffic_light_sweeper_helper: #$ticket_id:  Error evaluating yellow_expr=$yellow_expr: $err_msg"
 	}
 	if {[catch {
-	    if {"" != $red_expr && [expr $red_expr]} { set color [im_project_on_track_status_red] }
+	    if {"" != $red_expr && [expr {$red_expr}]} { set color [im_project_on_track_status_red] }
 	} err_msg]} {
 	    ns_log Error "im_sla_ticket_traffic_light_sweeper_helper: #$ticket_id:  Error evaluating red_expr=$red_expr: $err_msg"
 	}
@@ -764,9 +764,9 @@ ad_proc -public im_sla_ticket_solution_time_sweeper_helper {
 	    set start_julian($ticket_id) $ticket_creation_julian
 	    set start_epoch($ticket_id) $ticket_creation_epoch
 	    set end_julian($ticket_id) $now_julian
-	    set epoch_{$ticket_id}([expr $ticket_creation_epoch - 0.0003]) "creation"
+	    set epoch_{$ticket_id}([expr {$ticket_creation_epoch - 0.0003}]) "creation"
 	    set julian_{$ticket_id}($ticket_creation_julian) "creation"
-	    set epoch_{$ticket_id}([expr $now_epoch + 0.0003]) "now"
+	    set epoch_{$ticket_id}([expr {$now_epoch + 0.0003}]) "now"
 	    set julian_{$ticket_id}($now_julian) "now"
 	    
 	    if {$debug_p} { append time_html "<li>sla_id=$sla_id, $ticket_id: ticket_creation_epoch=$ticket_creation_epoch" }
@@ -799,12 +799,12 @@ ad_proc -public im_sla_ticket_solution_time_sweeper_helper {
 		    set service_start_minute [string trimleft [lindex $service_start_list 1] "0"]
 		    if {"" == $service_start_hour} { set service_start_hour 0 }
 		    if {"" == $service_start_minute} { set service_start_minute 0 }
-		    set service_start_epoch [expr [im_date_julian_to_epoch $j] + 3600.0*$service_start_hour + 60.0*$service_start_minute + 0.01]
+		    set service_start_epoch [expr {[im_date_julian_to_epoch $j] + 3600.0*$service_start_hour + 60.0*$service_start_minute + 0.01}]
 		    set epoch_{$ticket_id}($service_start_epoch) "service_start"
 		    if {$debug_p} { 
 			ns_log Notice "im_sla_ticket_solution_time: ticket_id=$ticket_id, service_start=$service_start, hour=$service_start_hour, min=$service_start_minute"
 			set service_start_epoch2 [db_string epoch "select extract(epoch from to_timestamp('$j $service_start', 'J HH24:MM')) + 0.01"]
-			ns_log Notice "im_sla_ticket_solution_time: diff=[expr $service_start_epoch - $service_start_epoch2]"
+			ns_log Notice "im_sla_ticket_solution_time: diff=[expr {$service_start_epoch - $service_start_epoch2}]"
 			append debug_html "<li>Start: julian=$j, ansi=[im_date_julian_to_ansi $j], service_start=$service_start, service_start_epoch=$service_start_epoch\n"
 		    }
 
@@ -818,12 +818,12 @@ ad_proc -public im_sla_ticket_solution_time_sweeper_helper {
 		    set service_end_minute [string trimleft [lindex $service_end_list 1] "0"]
 		    if {"" == $service_end_hour} { set service_end_hour 0 }
 		    if {"" == $service_end_minute} { set service_end_minute 0 }
-		    set service_end_epoch [expr [im_date_julian_to_epoch $j] + 3600.0*$service_end_hour + 60.0*$service_end_minute + 0.01]
+		    set service_end_epoch [expr {[im_date_julian_to_epoch $j] + 3600.0*$service_end_hour + 60.0*$service_end_minute + 0.01}]
 		    set epoch_{$ticket_id}($service_end_epoch) "service_end"
 		    if {$debug_p} { 
 			ns_log Notice "im_sla_ticket_solution_time: ticket_id=$ticket_id, service_end=$service_end, hour=$service_end_hour, min=$service_end_minute"
 			set service_end_epoch2 [db_string epoch "select extract(epoch from to_timestamp('$j $service_end', 'J HH24:MM')) + 0.01"]
-			ns_log Notice "im_sla_ticket_solution_time: diff=[expr $service_end_epoch - $service_end_epoch2]"
+			ns_log Notice "im_sla_ticket_solution_time: diff=[expr {$service_end_epoch - $service_end_epoch2}]"
 			append debug_html "<li>End: julian=$j, ansi=[im_date_julian_to_ansi $j], service_end=$service_end, service_end_epoch=$service_end_epoch\n"
 		    }		
 		}
@@ -849,7 +849,7 @@ ad_proc -public im_sla_ticket_solution_time_sweeper_helper {
 			set labour_start_minute [string trimleft [lindex $labour_start_list 1] "0"]
 			if {"" == $labour_start_hour} { set labour_start_hour 0 }
 			if {"" == $labour_start_minute} { set labour_start_minute 0 }
-			set labour_start_epoch [expr [im_date_julian_to_epoch $j] + 3600.0*$labour_start_hour + 60.0*$labour_start_minute + 0.04]
+			set labour_start_epoch [expr {[im_date_julian_to_epoch $j] + 3600.0*$labour_start_hour + 60.0*$labour_start_minute + 0.04}]
 			set epoch_{$ticket_id}($labour_start_epoch) "labour_start"
 
 			# Write the affected groups into a hash
@@ -866,7 +866,7 @@ ad_proc -public im_sla_ticket_solution_time_sweeper_helper {
 			if {$debug_p} {
 			    ns_log Notice "im_sla_ticket_solution_time: ticket_id=$ticket_id, labour_start=$labour_start, hour=$labour_start_hour, min=$labour_start_minute"
 			    set labour_start_epoch2 [db_string epoch "select extract(epoch from to_timestamp('$j $labour_start', 'J HH24:MM')) + 0.04"]
-			    ns_log Notice "im_sla_ticket_solution_time: diff=[expr $labour_start_epoch - $labour_start_epoch2]"
+			    ns_log Notice "im_sla_ticket_solution_time: diff=[expr {$labour_start_epoch - $labour_start_epoch2}]"
 			    append debug_html "<li>Labour Start: julian=$j, ansi=[im_date_julian_to_ansi $j], labour_start=$labour_start, labour_start_epoch=$labour_start_epoch\n"
 			}
 
@@ -880,7 +880,7 @@ ad_proc -public im_sla_ticket_solution_time_sweeper_helper {
 			set labour_end_minute [string trimleft [lindex $labour_end_list 1] "0"]
 			if {"" == $labour_end_hour} { set labour_end_hour 0 }
 			if {"" == $labour_end_minute} { set labour_end_minute 0 }
-			set labour_end_epoch [expr [im_date_julian_to_epoch $j] + 3600.0*$labour_end_hour + 60.0*$labour_end_minute + 0.04]
+			set labour_end_epoch [expr {[im_date_julian_to_epoch $j] + 3600.0*$labour_end_hour + 60.0*$labour_end_minute + 0.04}]
 			set epoch_{$ticket_id}($labour_end_epoch) "labour_end"
 			# Write the affected groups into a hash
 			set groups [list]
@@ -890,7 +890,7 @@ ad_proc -public im_sla_ticket_solution_time_sweeper_helper {
 			if {$debug_p} {
 			    ns_log Notice "im_sla_ticket_solution_time: ticket_id=$ticket_id, labour_end=$labour_end, hour=$labour_end_hour, min=$labour_end_minute"
 			    set labour_end_epoch2 [db_string epoch "select extract(epoch from to_timestamp('$j $labour_end', 'J HH24:MM')) + 0.04"]
-			    ns_log Notice "im_sla_ticket_solution_time: diff=[expr $labour_end_epoch - $labour_end_epoch2]"
+			    ns_log Notice "im_sla_ticket_solution_time: diff=[expr {$labour_end_epoch - $labour_end_epoch2}]"
 			    append debug_html "<li>Labour End: julian=$j, ansi=[im_date_julian_to_ansi $j], labour_end=$labour_end, labour_end_epoch=$labour_end_epoch\n"
 			}		
 		    }
@@ -1022,7 +1022,7 @@ ad_proc -public im_sla_ticket_solution_time_sweeper_helper {
 		set event [lindex $event_full 0]
 		
 		# Calculate duration since last event
-		set duration_epoch [expr $e - $last_epoch]
+		set duration_epoch [expr {$e - $last_epoch}]
 
 		# Which queue is responsible for the time passed?
 		if {[info exists queue_hash($e)]} { 
@@ -1046,7 +1046,7 @@ ad_proc -public im_sla_ticket_solution_time_sweeper_helper {
 			    foreach sh $labour_hours {
 				    set labour_start [lindex $sh 0]
 				    set labour_end [lindex $sh 1]
-				if {[string compare $labour_start $e_time] <= 0 && [string compare $e_time $labour_end] <= 0} {
+				if {$labour_start ne $e_time  <= 0 && $e_time ne $labour_end  <= 0} {
 				    # The event's time ($e_time) is between start and end time
 				    set ticket_labour_hour_p 1
 				}
@@ -1069,13 +1069,13 @@ ad_proc -public im_sla_ticket_solution_time_sweeper_helper {
 		    }
 		    service_start {
 			# Check if we were to count the duration until now
-			set count_duration_p [expr $ticket_open_p && $ticket_lifetime_p && $ticket_service_hour_p && $ticket_labour_hour_p]
+			set count_duration_p [expr {$ticket_open_p && $ticket_lifetime_p && $ticket_service_hour_p && $ticket_labour_hour_p}]
 			# Start counting the time from now on.
 			set ticket_service_hour_p 1
 		    }
 		    service_end {
 			# Check if we were to count the duration until now
-			set count_duration_p [expr $ticket_open_p && $ticket_lifetime_p && $ticket_service_hour_p && $ticket_labour_hour_p]
+			set count_duration_p [expr {$ticket_open_p && $ticket_lifetime_p && $ticket_service_hour_p && $ticket_labour_hour_p}]
 			# Don't count time from now on until the next service_start
 			set ticket_service_hour_p 0
 		    }
@@ -1086,7 +1086,7 @@ ad_proc -public im_sla_ticket_solution_time_sweeper_helper {
 			if {-1 == [lsearch $affected_groups $queue_id]} { continue }
 
 			# Check if we were to count the duration until now
-			set count_duration_p [expr $ticket_open_p && $ticket_lifetime_p && $ticket_service_hour_p && $ticket_labour_hour_p]
+			set count_duration_p [expr {$ticket_open_p && $ticket_lifetime_p && $ticket_service_hour_p && $ticket_labour_hour_p}]
 			# Start counting the time from now on.
 			set ticket_labour_hour_p 1
 		    }
@@ -1097,13 +1097,13 @@ ad_proc -public im_sla_ticket_solution_time_sweeper_helper {
 			if {-1 == [lsearch $affected_groups $queue_id]} { continue }
 
 			# Check if we were to count the duration until now
-			set count_duration_p [expr $ticket_open_p && $ticket_lifetime_p && $ticket_service_hour_p && $ticket_labour_hour_p]
+			set count_duration_p [expr {$ticket_open_p && $ticket_lifetime_p && $ticket_service_hour_p && $ticket_labour_hour_p}]
 			# Don't count time from now on until the next labour_start
 			set ticket_labour_hour_p 0
 		    }
 		    now {
 			# Check if we were to count the duration until now
-			set count_duration_p [expr $ticket_open_p && $ticket_lifetime_p && $ticket_service_hour_p && $ticket_labour_hour_p]
+			set count_duration_p [expr {$ticket_open_p && $ticket_lifetime_p && $ticket_service_hour_p && $ticket_labour_hour_p}]
 			# Current time. Don't count from here into the future...
 			set ticket_lifetime_p 0
 		    }
@@ -1118,7 +1118,7 @@ ad_proc -public im_sla_ticket_solution_time_sweeper_helper {
 			}
 
 			# Check if we were to count the duration until now
-			set count_duration_p [expr $ticket_open_p && $ticket_lifetime_p && $ticket_service_hour_p && $ticket_labour_hour_p]
+			set count_duration_p [expr {$ticket_open_p && $ticket_lifetime_p && $ticket_service_hour_p && $ticket_labour_hour_p}]
 
 			# Determine ticket status"
 			if {[lsearch $ticket_open_states $event] > -1} {
@@ -1133,13 +1133,13 @@ ad_proc -public im_sla_ticket_solution_time_sweeper_helper {
 
 		if {$count_duration_p} {
 		    # Total resolution time counter
-		    set resolution_seconds [expr $resolution_seconds + $duration_epoch]
+		    set resolution_seconds [expr {$resolution_seconds + $duration_epoch}]
 
 		    # Resolution time per queue
 		    if {"" != $last_queue_id} {
 			set seconds 0.0
 			if {[info exists queue_resolution_time($last_queue_id)]} { set seconds $queue_resolution_time($last_queue_id) }
-			set seconds [expr $seconds + $duration_epoch]
+			set seconds [expr {$seconds + $duration_epoch}]
 			set queue_resolution_time($last_queue_id) $seconds
 		    }
 		}
@@ -1155,20 +1155,20 @@ ad_proc -public im_sla_ticket_solution_time_sweeper_helper {
 		    set restime_html ""
 		    foreach q [lsort -integer [array names queue_resolution_time]] {
 			set q_name [util_memoize [list db_string queue "select group_name from groups where group_id = $q" -default ""]]
-			append restime_html "$q_name=[expr round(100 * $queue_resolution_time($q)) / 100.0], "
+			append restime_html "$q_name=[expr {round(100 * $queue_resolution_time($q)) / 100.0}], "
 		    }
 		    append time_html "
 			<tr>
-				<td>[expr round(100.0 * $e) / 100.0]</td>
+				<td>[expr {round(100.0 * $e) / 100.0}]</td>
 				<td>[im_date_epoch_to_ansi $e] [im_date_epoch_to_time $e]</td>
 				<td><font color=$color><nobr>$event $event_pretty</nobr></font></td>
-				<td align=right>[expr round(100.0 * $duration_epoch) / 100.0]</td>
+				<td align=right>[expr {round(100.0 * $duration_epoch) / 100.0}]</td>
 				<td align=right>$count_duration_p</td>
 				<td>$last_queue_name</td>
 				<td>$queue_name</td>
-				<td align=right>[expr round(100.0 * $resolution_seconds) / 100.0]</td>
-				<td align=right>[expr round(100.0 * $resolution_seconds / 60.0) / 100.0 ]</td>
-				<td align=right>[expr round(100.0 * $resolution_seconds / 3600.0) / 100.0]</td>
+				<td align=right>[expr {round(100.0 * $resolution_seconds) / 100.0}]</td>
+				<td align=right>[expr {round(100.0 * $resolution_seconds / 60.0) / 100.0 }]</td>
+				<td align=right>[expr {round(100.0 * $resolution_seconds / 3600.0) / 100.0}]</td>
 				<td>$restime_html</td>
 			</tr>
                     "
@@ -1193,7 +1193,7 @@ ad_proc -public im_sla_ticket_solution_time_sweeper_helper {
 	    # Update the resolution time of the ticket
 	    db_dml update_resolution_time "
 		update im_tickets set 
-			ticket_resolution_time = [expr $resolution_seconds / 3600.0],
+			ticket_resolution_time = [expr {$resolution_seconds / 3600.0}],
 			ticket_resolution_time_dirty = now(),
 			ticket_resolution_time_per_queue = '{$restime_per_queue}'
 		where ticket_id = :ticket_id

@@ -23,7 +23,7 @@ if {![info exists object_id]} {
 # This portlet only makes sense in SLAs...
 
 if {![info exists return_url] || "" == $return_url} { set return_url [im_url_with_query] }
-set current_user_id [ad_maybe_redirect_for_registration]
+set current_user_id [auth::require_login]
 set new_sla_parameter_url [export_vars -base "/intranet-sla-management/new" {object_id return_url}]
 
 # Check the permissions

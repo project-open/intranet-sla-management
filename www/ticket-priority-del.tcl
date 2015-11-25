@@ -21,7 +21,7 @@ ad_page_contract {
 # Defaults & Security
 # ---------------------------------------------------------------
 
-set current_user_id [ad_maybe_redirect_for_registration]
+set current_user_id [auth::require_login]
 set sla_id $project_id
 
 im_project_permissions $current_user_id $project_id sla_view sla_read sla_write sla_admin

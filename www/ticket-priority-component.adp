@@ -18,7 +18,7 @@
 <td><%= [im_category_select "Intranet Ticket Status" ticket_severity_id ""] %></td>
 <td><%= [im_category_select "Intranet Ticket Priority" ticket_prio_id ""] %></td>
 </tr>
-<tr><td colspan=3><input type=submit value='@create_new_entry_msg@'></td></tr>
+<tr><td colspan="3"><input type="submit" value='@create_new_entry_msg@'></td></tr>
 </table>
 </form>
 

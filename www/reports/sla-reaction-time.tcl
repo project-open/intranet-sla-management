@@ -23,7 +23,7 @@ ad_page_contract {
 # Security
 #
 set menu_label "reporting-helpdesk-sla-reaction-time"
-set current_user_id [ad_maybe_redirect_for_registration]
+set current_user_id [auth::require_login]
 set read_p [db_string report_perms "
 	select	im_object_permission_p(m.menu_id, :current_user_id, 'read')
 	from	im_menus m
@@ -33,7 +33,7 @@ set read_p [db_string report_perms "
 # For testing - set manually
 set read_p "t"
 
-if {![string equal "t" $read_p]} {
+if {"t" ne $read_p } {
     set message "You don't have the necessary permissions to view this page"
     ad_return_complaint 1 "<li>$message"
     ad_script_abort
@@ -315,7 +315,7 @@ if {0 != $ticket_type_id && "" != $ticket_type_id} {
 }
 
 set where_clause [join $criteria " and\n\t\t"]
-if { ![empty_string_p $where_clause] } { set where_clause " and $where_clause" }
+if { $where_clause ne "" } { set where_clause " and $where_clause" }
 
 
 set report_sql "
@@ -524,7 +524,7 @@ db_foreach sql $report_sql {
 	# a "hash", depending on the value of "counter".
 	# You need explicite evaluation ("expre") in TCL
 	# to calculate arithmetic expressions. 
-	set class $rowclass([expr $counter % 2])
+	set class $rowclass([expr {$counter % 2}])
 
 	im_report_display_footer \
 	    -output_format $output_format \
@@ -584,7 +584,7 @@ im_report_display_footer \
 # Calculate fields for totoal (footer0)
 # which can be undefined.
 set ticket_reaction_time_total_median 0.00
-catch { set ticket_reaction_time_total_median [expr $ticket_reaction_time_total_sum / $ticket_reaction_time_total_count] }
+catch { set ticket_reaction_time_total_median [expr {$ticket_reaction_time_total_sum / $ticket_reaction_time_total_count}] }
 
 im_report_render_row \
     -output_format $output_format \

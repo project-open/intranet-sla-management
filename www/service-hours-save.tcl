@@ -20,7 +20,7 @@ ad_page_contract {
 # Defaults & Security
 # ---------------------------------------------------------------
 
-set current_user_id [ad_maybe_redirect_for_registration]
+set current_user_id [auth::require_login]
 set page_title [lang::message::lookup "" intranet-sla-management.Save_Service_Hours "Save Service Hours"]
 set context_bar [im_context_bar $page_title]
 set page_focus "im_header_form.keywords"
@@ -64,7 +64,7 @@ foreach dow {0 1 2 3 4 5 6} {
 	    set start_pretty $start
 	    if {[string length $start_pretty] < 2} { set start_pretty "0$start" }
 	    # The end time is the start of the next hour, so we have to add +1 to end
-	    set end_pretty [expr $end + 1]
+	    set end_pretty [expr {$end + 1}]
 	    if {[string length $end_pretty] < 2} { set end_pretty "0$end_pretty" }
 	    lappend service_hours [list "$start_pretty:00" "$end_pretty:00"]
 

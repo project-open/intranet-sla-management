@@ -1,10 +1,10 @@
 <if @enable_master_p@><master></if>
-<property name="title">@page_title@</property>
-<property name="context">@context;noquote@</property>
+<property name="doc(title)">@page_title;literal@</property>
+<property name="context">@context;literal@</property>
 <property name="main_navbar_label">helpdesk</property>
-<property name="focus">@focus;noquote@</property>
-<property name="sub_navbar">@sub_navbar;noquote@</property>
-<property name="left_navbar">@left_navbar_html;noquote@</property>
+<property name="focus">@focus;literal@</property>
+<property name="sub_navbar">@sub_navbar;literal@</property>
+<property name="left_navbar">@left_navbar_html;literal@</property>
 
 <SCRIPT Language=JavaScript src=/resources/diagram/diagram/diagram.js></SCRIPT>
 
