@@ -67,8 +67,8 @@ ad_proc -public im_sla_parameter_component {
     to add more parameters
 } {
     set project_id $object_id
-    if {![im_project_has_type $project_id "Service Level Agreement"]} { 
-	ns_log Notice "im_sla_parameter_component: Project \#$project_id is not a 'Service Level Agreement'"
+    if {![im_project_has_type $project_id [im_project_type_ticket_container]]} { 
+	ns_log Notice "im_sla_parameter_component: Project \#$project_id is not a 'Ticket Container'"
 	return "" 
     }
 
@@ -90,8 +90,8 @@ ad_proc -public im_sla_parameter_list_component {
     Returns a HTML component with a mix of SLA parameters and indicators.
     The component can be used both on the SLAViewPage and the ParamViewPage.
 } {
-    if {![im_project_has_type $project_id "Service Level Agreement"]} { 
-	ns_log Notice "im_sla_parameter_list_component: Project \#$project_id is not a 'Service Level Agreement'"
+    if {![im_project_has_type $project_id [im_project_type_ticket_container]]} { 
+	ns_log Notice "im_sla_parameter_list_component: Project \#$project_id is not a 'Ticket Container'"
 	return "" 
     }
 
@@ -113,8 +113,8 @@ ad_proc -public im_sla_service_hours_component {
     Returns a HTML component with a component to display and modify working hours
     for the 7 days of the week.
 } {
-    if {![im_project_has_type $project_id "Service Level Agreement"]} { 
-	ns_log Notice "im_sla_service_hours_component: Project \#$project_id is not a 'Service Level Agreement'"
+    if {![im_project_has_type $project_id [im_project_type_ticket_container]]} { 
+	ns_log Notice "im_sla_service_hours_component: Project \#$project_id is not a 'Ticket Container'"
 	return "" 
     }
 
@@ -135,8 +135,8 @@ ad_proc -public im_ticket_priority_map_component {
     Returns a HTML component with a component containing a list of
     ticket_type x ticket_severity => ticket_priority tuples.
 } {
-    if {![im_project_has_type $project_id "Service Level Agreement"]} { 
-	ns_log Notice "im_sla_service_hours_component: Project \#$project_id is not a 'Service Level Agreement'"
+    if {![im_project_has_type $project_id [im_project_type_ticket_container]]} { 
+	ns_log Notice "im_sla_service_hours_component: Project \#$project_id is not a 'Ticket Container'"
 	return "" 
     }
 

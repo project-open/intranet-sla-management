@@ -6,7 +6,7 @@
 # http://www.project-open.com/license/ for details.
 
 # This indicator is executed from within the view page for a project
-# of sub-type "Service Level Agreement". It shows a list of indicators,
+# of sub-type "Ticket Container". It shows a list of indicators,
 # one for each SLA parameter.
 #
 # The component is called with a parameter "project_id" representing
