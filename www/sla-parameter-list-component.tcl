@@ -80,7 +80,7 @@ db_foreach column_list_sql $column_sql {
 
     # Show this field in the template::list
     lappend elements ${attribute_name}_deref
-    lappend elements { label "[lang::message::lookup {} intranet-freelance-rfqs.$attribute_name $pretty_name]" }
+    lappend elements { label "[lang::message::lookup {} intranet-sla-management.$attribute_name $pretty_name]" }
 
 }
 set extra_select [join $extra_selects ",\n\t"]
