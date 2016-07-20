@@ -256,13 +256,13 @@ ad_proc -public im_sla_day_of_week_list {
     Returns a list with weekday names from 0=Su to 6=Sa
 } {
     set dow_list [list]
-    lappend dow_list [lang::message::lookup "" intranet-core.Sunday Sunday]
-    lappend dow_list [lang::message::lookup "" intranet-core.Monday Monday]
-    lappend dow_list [lang::message::lookup "" intranet-core.Tuesday Tuesday]
-    lappend dow_list [lang::message::lookup "" intranet-core.Wednesday Wednesday]
-    lappend dow_list [lang::message::lookup "" intranet-core.Thursday Thursday]
-    lappend dow_list [lang::message::lookup "" intranet-core.Friday Friday]
-    lappend dow_list [lang::message::lookup "" intranet-core.Saturday Saturday]
+    lappend dow_list [lang::message::lookup "" calendar.Sunday Sunday]
+    lappend dow_list [lang::message::lookup "" calendar.Monday Monday]
+    lappend dow_list [lang::message::lookup "" calendar.Tuesday Tuesday]
+    lappend dow_list [lang::message::lookup "" calendar.Wednesday Wednesday]
+    lappend dow_list [lang::message::lookup "" calendar.Thursday Thursday]
+    lappend dow_list [lang::message::lookup "" calendar.Friday Friday]
+    lappend dow_list [lang::message::lookup "" calendar.Saturday Saturday]
     return $dow_list
 }
 
