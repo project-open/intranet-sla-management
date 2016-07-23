@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<message_catalog package_key="intranet-sla-management" locale="de_DE" charset="ISO-8859-1">
+
+  <msg key="Create_a_New_Indicator">Neuer Indikator</msg>
+  <msg key="Create_a_New_SLA_Parameter">Neuer SLA Parameter</msg>
+  <msg key="Create_new_entry">Neues Mapping</msg>
+  <msg key="Day">Tag</msg>
+  <msg key="Max_Resolution_Hours">Max. Lösungszeit (Stunden)</msg>
+  <msg key="max_resolution_hours">Max. Lösungszeit (Stunden)</msg>
+  <msg key="New_Parameter">Neuer Parameter</msg>
+  <msg key="Parameter_Name">Name</msg>
+  <msg key="Prio">Prio</msg>
+  <msg key="SLA_Indicators">SLA Indikatoren</msg>
+  <msg key="SLA_Mapeters">SLA Parameter</msg>
+  <msg key="SLA_Parameter_Type">SLA Parameter Type</msg>
+  <msg key="SLA_Parameters">SLA Parameter</msg>
+  <msg key="SLA_Service_Hours">SLA Service Stunden</msg>
+  <msg key="SLA_Ticket_Prio">SLA Anfrage Priorität</msg>
+  <msg key="ticket_prio_id">Prio</msg>
+  <msg key="Ticket_Priority">Prio</msg>
+  <msg key="Ticket_Severity">Schweregrad</msg>
+  <msg key="Ticket_Type">Anfragetyp</msg>
+  <msg key="ticket_type_id">Anfragetyp</msg>
+</message_catalog>
