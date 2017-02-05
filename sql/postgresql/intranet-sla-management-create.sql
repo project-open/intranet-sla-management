@@ -126,6 +126,9 @@ SELECT acs_object_type__create_type (
 					-- returns the name of the object.
 );
 
+update acs_object_types set type_category_type = 'Intranet SLA Parameter Type' where object_type = 'im_sla_parameter';
+
+
 -- Add additional meta information to allow DynFields to extend the im_note object.
 update acs_object_types set
         status_type_table = 'im_sla_management',		-- which table contains the status_id field?
@@ -204,6 +207,7 @@ create table im_sla_parameters (
 	
 	-- More parameters are added using DynFields
 );
+
 
 
 -- Speed up (frequent) queries to find all sla-management for a specific object.
@@ -544,6 +548,39 @@ create table im_sla_service_hours (
 
 
 
+-- Create service hours if not already set
+create or replace function inline_0 ()
+returns integer as $body$
+DECLARE
+	v_count		integer;
+	v_attribute_id	integer;
+	row		record;
+BEGIN
+	FOR row IN
+		select	project_id from (
+		select	p.project_id,
+			(select count(*) from im_sla_service_hours ssh where ssh.sla_id = p.project_id) as defined_hours
+		from	im_projects p
+		where	p.project_type_id = 2502 and
+			p.project_status_id in (select im_sub_categories(76))
+		) t where defined_hours = 0
+	LOOP
+		insert into im_sla_service_hours (sla_id, dow, service_hours) values (row.project_id, 0, '');
+		insert into im_sla_service_hours (sla_id, dow, service_hours) values (row.project_id, 1, '{09:00 19:00}');
+		insert into im_sla_service_hours (sla_id, dow, service_hours) values (row.project_id, 2, '{09:00 19:00}');
+		insert into im_sla_service_hours (sla_id, dow, service_hours) values (row.project_id, 3, '{09:00 19:00}');
+		insert into im_sla_service_hours (sla_id, dow, service_hours) values (row.project_id, 4, '{09:00 19:00}');
+		insert into im_sla_service_hours (sla_id, dow, service_hours) values (row.project_id, 5, '{09:00 19:00}');
+		insert into im_sla_service_hours (sla_id, dow, service_hours) values (row.project_id, 6, '');
+	END LOOP;
+	return 0;
+end; $body$ language 'plpgsql';
+select inline_0();
+drop function inline_0();
+
+
+
+
 -----------------------------------------------------------
 -- DynFields
 --
@@ -860,4 +897,34 @@ SELECT acs_permission__grant_permission(
 -- -- Execute and then drop the function
 -- select inline_0 ();
 -- drop function inline_0 ();
+
+
+
+-- Define SLA parameters if not already there
+--
+SELECT im_dynfield_widget__new (
+	null, 'im_dynfield_widget', now(), 0, '0.0.0.0', null,
+	'ticket_type', 'Ticket Type', 'Ticket Type',
+	10007, 'integer', 'im_category_tree', 'integer',
+	'{custom {category_type "Intranet Ticket Type"}}'
+);
+
+SELECT im_dynfield_widget__new (
+	null, 'im_dynfield_widget', now(), 0, '0.0.0.0', null,
+	'ticket_status', 'Ticket Status', 'Ticket Status',
+	10007, 'integer', 'im_category_tree', 'integer',
+	'{custom {category_type "Intranet Ticket Status"}}'
+);
+
+SELECT im_dynfield_attribute_new (
+        'im_sla_parameter', 'ticket_type_id', 'Ticket Type', 'ticket_type', 'integer', 'f', 10, 'f', 'im_sla_parameters'
+);
+SELECT im_dynfield_attribute_new (
+        'im_sla_parameter', 'max_resolution_hours', 'Max Resolution Hours', 'numeric', 'float', 'f', 20, 'f', 'im_sla_parameters'
+);
+
+-- Ticket Priority for SLA Parameter
+SELECT im_dynfield_attribute_new (
+        'im_sla_parameter', 'ticket_prio_id', 'Ticket Priority', 'ticket_priority', 'integer', 'f', 10, 'f', 'im_sla_parameters'
+);
 
