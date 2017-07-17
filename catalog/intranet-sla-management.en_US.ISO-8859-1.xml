@@ -3,13 +3,14 @@
 
   <msg key="Create_a_New_Indicator">Create New Indicator</msg>
   <msg key="Create_a_New_SLA_Parameter">Create New SLA Parameter</msg>
-  <msg key="Create_new_entry">Create new mapping entry</msg>
+  <msg key="Create_new_entry">Create new entry</msg>
   <msg key="Day">Day</msg>
   <msg key="Max_Resolution_Hours">Max Resolution Hours</msg>
   <msg key="max_resolution_hours">Max Resolution Hours</msg>
   <msg key="New_Parameter">New Parameter</msg>
   <msg key="Parameter_Name">Name</msg>
   <msg key="Prio">Prio</msg>
+  <msg key="Resolution_Time">Resolution Time</msg>
   <msg key="SLA_Indicators">SLA Indicators</msg>
   <msg key="SLA_Management_Help">SLA Management Help</msg>
   <msg key="SLA_Mapeters">SLA Parameters</msg>
@@ -21,5 +22,5 @@
   <msg key="Ticket_Priority">Prio</msg>
   <msg key="Ticket_Severity">Severity</msg>
   <msg key="Ticket_Type">Ticket Type</msg>
-  <msg key="ticket_type_id">Ticket Type</msg>
+  <msg key="ticket_type_id">Type</msg>
 </message_catalog>
