@@ -15,16 +15,14 @@
         <summary>Service Level Agreements define parameters for service contracts between customers and service providers. This package allows defining SLA parameters using dynamic attributes.</summary>
         <release-date>2016-11-15</release-date>
         <vendor url="http://www.project-open.com/">]project-open[</vendor>
+	<license>]project-open[ Free License (FL)</license>
         <description format="text/plain">Service Level Agreements define parameters for service contracts between customers and service providers. This package allows defining SLA parameters using dynamic attributes.</description>
         <maturity>0</maturity>
-
-
         <provides url="intranet-sla-management" version="4.0.0.0.0"/>
         <requires url="intranet-core" version="4.0.0.0.0"/>
         <requires url="intranet-dynfield" version="4.0.0.0.0"/>
         <requires url="intranet-rest" version="4.0.0.0.0"/>
         <requires url="intranet-reporting-dashboard" version="4.0.0.0.0"/>
-
         <callbacks>
         </callbacks>
         <parameters>
