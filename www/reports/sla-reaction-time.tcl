@@ -380,7 +380,7 @@ switch $output_format {
     html {
 	ns_write "
 	[im_header]
-	[im_navbar]
+	[im_navbar reporting]
 	<form>
 	<table cellspacing=10 cellpadding=0 border=0>
 	<tr valign=top>
