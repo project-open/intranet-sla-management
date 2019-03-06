@@ -48,7 +48,7 @@ BEGIN
 	add ticket_resolution_time_dirty timestamptz;
 
 	SELECT im_dynfield_attribute_new (
-		'im_ticket', 'ticket_resolution_time', 'Resolution Time', 'numeric', 'integer', 'f', 9000, 'f', 'im_tickets'
+		'im_ticket', 'ticket_resolution_time', 'Resolution Time', 'numeric', 'float', 'f', 9000, 'f', 'im_tickets'
 	) INTO 	v_attribute_id;
 
 	-- set permissions for ticket_resolution_time to "read only" for all types of tickets.
@@ -631,7 +631,7 @@ SELECT im_dynfield_attribute_new (
 
 
 SELECT im_dynfield_attribute_new (
-	'im_sla_parameter', 'max_resolution_hours', 'Max Resolution Hours', 'numeric', 'integer', 'f', 900, 'f', 'im_sla_parameters'
+	'im_sla_parameter', 'max_resolution_hours', 'Max Resolution Hours', 'numeric', 'float', 'f', 900, 'f', 'im_sla_parameters'
 );
 
 
