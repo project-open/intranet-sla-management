@@ -825,7 +825,7 @@ SELECT im_component_plugin__new (
 			coalesce(avg(t.ticket_resolution_time), 0)
 		from	im_tickets t, im_projects p
 		where	t.ticket_id = p.project_id and
-			p.parent_id = %project_id%
+			p.parent_id = $project_id
 		group by ticket_type_id
 		order by ticket_type
 "',
