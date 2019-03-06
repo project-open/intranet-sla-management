@@ -97,6 +97,25 @@ BEGIN
 	alter table im_projects
 	add sla_ticket_priority_map text;
 
+	return 0;
+end; $body$ language 'plpgsql';
+select inline_0();
+drop function inline_0();
+
+
+
+
+-- Add a field to im_projects to store ticket priority map
+create or replace function inline_0 ()
+returns integer as $body$
+DECLARE
+	v_count		integer;
+	v_attribute_id	integer;
+BEGIN
+	select count(*) into v_count from pg_class
+	where  lower(relname) = 'im_ticket_priority_map_seq';
+	IF v_count > 0 THEN return 1; END IF;
+
 	-- Create a sequence for the map tuples
 	create sequence im_ticket_priority_map_seq;
 
@@ -104,6 +123,11 @@ BEGIN
 end; $body$ language 'plpgsql';
 select inline_0();
 drop function inline_0();
+
+
+
+
+
 
 
 
