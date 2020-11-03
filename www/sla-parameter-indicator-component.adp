@@ -1,5 +1,5 @@
 <if @sla_read@>
-<script language="JavaScript" type="text/javascript" src="/resources/diagram/diagram/diagram.js"></script>
+<!-- <script language="JavaScript" type="text/javascript" src="/resources/diagram/diagram/diagram.js"></script> -->
 <form action="/intranet-sla-management/sla-parameter-action" method=GET>
 <%= [export_vars -form {return_url}] %>
 <table>

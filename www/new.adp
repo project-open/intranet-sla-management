@@ -6,7 +6,7 @@
 <property name="sub_navbar">@sub_navbar;literal@</property>
 <property name="left_navbar">@left_navbar_html;literal@</property>
 
-<SCRIPT Language=JavaScript src=/resources/diagram/diagram/diagram.js></SCRIPT>
+<!-- <SCRIPT Language=JavaScript src=/resources/diagram/diagram/diagram.js></SCRIPT> -->
 
 <if @message@ not nil>
     <div class="general-message">@message@</div>
