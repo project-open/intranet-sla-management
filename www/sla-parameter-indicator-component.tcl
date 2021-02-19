@@ -3,7 +3,7 @@
 # Copyright (c) 2010 ]project-open[
 #
 # All rights reserved. Please check
-# http://www.project-open.com/license/ for details.
+# https://www.project-open.com/license/ for details.
 
 # This indicator is executed from within the view page for a project
 # of sub-type "Ticket Container". It shows a list of indicators,
@@ -257,7 +257,7 @@ if {$sla_write} {
     append footer_html "<li><a href='$new_param_url'>[lang::message::lookup "" intranet-sla-management.Create_a_New_SLA_Parameter "Create a New SLA Parameter"]</a></li>\n"
     set new_indicator_url [export_vars -base "/intranet-reporting-indicators/new" {return_url}]
     append footer_html "<li><a href='$new_indicator_url'>[lang::message::lookup "" intranet-sla-management.Create_a_New_Indicator "Create a New Indicator"]</a></li>\n"
-    append footer_html "<li><a href='http://www.project-open.com/en/module-itsm'>[lang::message::lookup "" intranet-sla-management.SLA_Management_Help "SLA Management Help"]</a></li>\n"
+    append footer_html "<li><a href='https://www.project-open.com/en/module-itsm'>[lang::message::lookup "" intranet-sla-management.SLA_Management_Help "SLA Management Help"]</a></li>\n"
     append footer_html "</ul>\n"
 }
 

@@ -3,7 +3,7 @@
 # Copyright (C) 2010 ]project-open[
 #
 # All rights reserved. Please check
-# http://www.project-open.com/license/ for details.
+# https://www.project-open.com/license/ for details.
 
 ad_page_contract {
     Allow the user to create new OpenACS relationships.

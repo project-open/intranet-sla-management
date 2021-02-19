@@ -3,7 +3,7 @@
 # Copyright (c) 2003-2010 ]project-open[
 #
 # All rights reserved. 
-# Please see http://www.project-open.com/ for licensing.
+# Please see https://www.project-open.com/ for licensing.
 
 # ------------------------------------------------------------
 # Page Contract 

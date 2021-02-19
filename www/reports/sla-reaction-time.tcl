@@ -3,7 +3,7 @@
 # Copyright (c) 2011 ]project-open[
 #
 # All rights reserved. 
-# Please see http://www.project-open.com/ for licensing.
+# Please see https://www.project-open.com/ for licensing.
 
 ad_page_contract {
     Show Reaction time per ticket
