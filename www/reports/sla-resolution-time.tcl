@@ -198,10 +198,10 @@ set ticket_header {
 set counters [list]
 
 # Counters for resolution time per SLA and total
-lappend counters [list pretty_name "Solution Time SLA Sum" var ticket_resolution_time_sla_sum reset "\$sla_id" expr "\$ticket_resolution_time"]
+lappend counters [list pretty_name "Solution Time SLA Sum" var ticket_resolution_time_sla_sum reset "\$sla_id" expr "\$ticket_resolution_time+0"]
 lappend counters [list pretty_name "Solution Time SLA Count" var ticket_resolution_time_sla_count reset "\$sla_id" expr "1"]
 
-lappend counters [list pretty_name "Solution Time Total Sum" var ticket_resolution_time_total_sum reset 0 expr "\$ticket_resolution_time"]
+lappend counters [list pretty_name "Solution Time Total Sum" var ticket_resolution_time_total_sum reset 0 expr "\$ticket_resolution_time+0"]
 lappend counters [list pretty_name "Solution Time Total Count" var ticket_resolution_time_total_count reset 0 expr "1"]
 
 
