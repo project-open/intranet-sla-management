@@ -198,8 +198,8 @@ set ticket_header {
 set counters [list]
 
 # Counters for resolution time per SLA and total
-lappend counters [list pretty_name "Solution Time SLA Sum" var ticket_resolution_time_sla_sum reset "\$sla_id" expr "\$ticket_resolution_time+0"]
-lappend counters [list pretty_name "Solution Time SLA Count" var ticket_resolution_time_sla_count reset "\$sla_id" expr "1"]
+lappend counters [list pretty_name "Solution Time SLA Sum" var ticket_resolution_time_sla_sum reset "\$sla_id+0" expr "\$ticket_resolution_time+0"]
+lappend counters [list pretty_name "Solution Time SLA Count" var ticket_resolution_time_sla_count reset "\$sla_id+0" expr "1"]
 
 lappend counters [list pretty_name "Solution Time Total Sum" var ticket_resolution_time_total_sum reset 0 expr "\$ticket_resolution_time+0"]
 lappend counters [list pretty_name "Solution Time Total Count" var ticket_resolution_time_total_count reset 0 expr "1"]
@@ -322,8 +322,8 @@ db_foreach groups $group_sql {
     lappend footer0 "\#align=right \[lc_numeric \[expr round(100.0 * \$${var_name}_total_sum / \$${var_name}_total_count\) / 100.0\] {} $locale\]"
 
     # Por SLA
-    lappend counters [list pretty_name "$group_name SLA Sum" var "${var_name}_sla_sum" reset "\$sla_id" expr "\$$var_name+0"]
-    lappend counters [list pretty_name "$group_name SLA Count" var "${var_name}_sla_count" reset "\$sla_id" expr "1"]
+    lappend counters [list pretty_name "$group_name SLA Sum" var "${var_name}_sla_sum" reset "\$sla_id+0" expr "\$$var_name+0"]
+    lappend counters [list pretty_name "$group_name SLA Count" var "${var_name}_sla_count" reset "\$sla_id+0" expr "1"]
     lappend sla_footer "\#align=right \[lc_numeric \[expr round(100.0 * \$${var_name}_sla_sum / \$${var_name}_sla_count\) / 100.0\] {} $locale\]"
 
 }
