@@ -426,7 +426,7 @@ set report_sql "
 
 # --------------------------------------------------------
 # Write out HTTP header, considering CSV/MS-Excel formatting
-im_report_write_http_headers -output_format $output_format
+im_report_write_http_headers -output_format $output_format -report_name "sla-resolution-time"
 
 switch $output_format {
     html {
